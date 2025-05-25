@@ -1,3 +1,9 @@
+<script setup lang="ts">
+import { User } from 'lucide-vue-next'
+
+const isDialogOpened = ref(false)
+</script>
+
 <template>
   <!-- banner -->
   <!-- top header -->
@@ -15,10 +21,25 @@
       <UiInput placeholder="Найти товар" />
     </div>
 
-    <div class="flex gap-2 col-span-2">
-      <UiButton>Button1</UiButton>
-      <UiButton>Button2</UiButton>
-      <UiButton>Button3</UiButton>
+    <div class="justify-end flex gap-2 col-span-2">
+      <UiTooltipProvider>
+        <UiTooltip>
+          <UiTooltipTrigger as-child>
+            <UiButton size="icon" variant="outline" @click="isDialogOpened = !isDialogOpened">
+              <User />
+            </UiButton>
+          </UiTooltipTrigger>
+
+          <UiTooltipContent>
+            <p>Вход</p>
+          </UiTooltipContent>
+        </UiTooltip>
+      </UiTooltipProvider>
+
+      <!-- <UiButton>Button2</UiButton>
+      <UiButton>Button3</UiButton> -->
     </div>
   </header>
+
+  <BlockAuthSignBase v-model:open="isDialogOpened" />
 </template>

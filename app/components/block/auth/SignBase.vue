@@ -1,27 +1,29 @@
 <script setup lang="ts">
-import type { EmailSchemaType } from '~/lib/types'
+import type { SignInValues } from '~/lib/types'
 import { ArrowLeft, Store } from 'lucide-vue-next'
 
 const emit = defineEmits<{
-  signUp: []
-  signIn: []
+  sendOtp: [string]
+  signIn: [SignInValues, Ref<boolean>]
 }>()
 
 const isDialogOpened = defineModel<boolean>('open')
+const isPinFormLoading = ref(false)
 
 const isSecondStep = ref(false)
-const signValues = ref<EmailSchemaType>({ email: '' })
+const email = ref('')
 
-function singUpAction(values: EmailSchemaType) {
-  emit('signUp')
+function sendOtpAction(value: string) {
+  emit('sendOtp', value)
+  email.value = value
   isSecondStep.value = true
-  signValues.value = values
 }
 
-function singInAction(values: EmailSchemaType) {
-  emit('signIn')
-  isSecondStep.value = true
-  signValues.value = values
+function signInAction(value: string) {
+  emit('signIn', {
+    email: email.value,
+    otp: value,
+  }, ref(isPinFormLoading))
 }
 
 function backToFirstStep() {
@@ -48,25 +50,9 @@ function preventOutsideClick(event: Event) {
         </UiDialogHeader>
 
         <UiDialogFooter>
-          <UiTabs default-value="sign-in" class="w-full gap-4">
-            <UiTabsList class="w-full">
-              <UiTabsTrigger value="sign-in">
-                Авторизация
-              </UiTabsTrigger>
-
-              <UiTabsTrigger value="sign-up">
-                Регистрация
-              </UiTabsTrigger>
-            </UiTabsList>
-
-            <UiTabsContent value="sign-in">
-              <BlockAuthSignIn @action="singInAction" />
-            </UiTabsContent>
-
-            <UiTabsContent value="sign-up">
-              <BlockAuthSignUp @action="singUpAction" />
-            </UiTabsContent>
-          </UiTabs>
+          <div class="w-full">
+            <BlockAuthEmailForm @action="sendOtpAction" />
+          </div>
         </UiDialogFooter>
       </template>
 
@@ -84,14 +70,14 @@ function preventOutsideClick(event: Event) {
 
             <div class="flex flex-col justify-center items-center text-sm text-gray-500">
               <span>Отправили</span>
-              <span>на <span class="text-primary">{{ signValues.email }}</span></span>
+              <span>на <span class="text-primary">{{ email }}</span></span>
               <span>Если во входящих нет, проверьте спам</span>
             </div>
           </UiDialogTitle>
         </UiDialogHeader>
 
         <UiDialogFooter>
-          <BlockAuthSignPin :email="signValues.email" />
+          <BlockAuthPinForm :email :is-loading="isPinFormLoading" @action="signInAction" />
         </UiDialogFooter>
       </template>
     </UiDialogContent>

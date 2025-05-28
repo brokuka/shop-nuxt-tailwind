@@ -2,16 +2,22 @@
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import { PIN_SLOT_LENGTH } from '~/lib/constants'
-import { pinSchema } from '~/lib/types'
+import { pinSchema } from '~/lib/schemas'
 
 defineProps<{ email: string }>()
+
+const emit = defineEmits<{
+  action: [string]
+}>()
+
+const isLoading = defineModel<boolean>('isLoading')
 
 const { handleSubmit, setFieldValue } = useForm({
   validationSchema: toTypedSchema(pinSchema),
 })
 
-const onSubmit = handleSubmit(({ pin }) => {
-  console.log('@pin', pin.join('')) // Объединяем массив в строку
+const onSubmit = handleSubmit(async ({ pin }) => {
+  emit('action', pin.join(''))
 })
 
 const fieldOptions = {
@@ -66,7 +72,7 @@ onMounted(() => {
       </UiFormItem>
     </UiFormField>
 
-    <UiButton class="w-full" type="submit">
+    <UiButton class="w-full" type="submit" :loading="isLoading">
       Проверить
     </UiButton>
   </form>

@@ -1,25 +1,32 @@
 <script setup lang="ts">
-import type { EmailSchemaType } from '~/lib/types'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
-import { emailSchema } from '~/lib/types'
+
+import { emailSchema } from '~/lib/schemas'
 
 const emit = defineEmits<{
-  action: [EmailSchemaType]
+  action: [string]
 }>()
 
 const form = useForm({
   validationSchema: toTypedSchema(emailSchema),
 })
 
+const fieldOptions = {
+  validateOnBlur: false,
+  validateOnChange: false,
+  validateOnInput: false,
+  validateOnModelUpdate: false,
+}
+
 const onSubmit = form.handleSubmit((values) => {
-  emit('action', values)
+  emit('action', values.email)
 })
 </script>
 
 <template>
   <form class="flex flex-col gap-4" @submit="onSubmit">
-    <UiFormField v-slot="{ componentField }" name="email">
+    <UiFormField v-slot="{ componentField }" name="email" v-bind="fieldOptions">
       <UiFormItem>
         <UiFormLabel>Почта</UiFormLabel>
 
@@ -32,7 +39,7 @@ const onSubmit = form.handleSubmit((values) => {
     </UiFormField>
 
     <UiButton type="submit" class="w-full">
-      Создать аккаунт
+      Войти
     </UiButton>
   </form>
 </template>

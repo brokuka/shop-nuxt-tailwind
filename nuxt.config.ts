@@ -10,8 +10,6 @@ export default defineNuxtConfig({
     compatibilityVersion: 4,
   },
 
-  modules: ['@nuxt/eslint', 'template-copyright', 'shadcn-nuxt'],
-
   vite: {
     plugins: [
       tailwindcss(),
@@ -19,6 +17,13 @@ export default defineNuxtConfig({
   },
 
   css: ['~/assets/style/tailwind.css'],
+
+  modules: [
+    '@nuxt/eslint',
+    'template-copyright',
+    'shadcn-nuxt',
+    '@pinia/nuxt',
+  ],
 
   eslint: {
     config: {

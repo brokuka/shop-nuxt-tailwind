@@ -19,7 +19,7 @@ const ITEMS = [
   {
     label: 'Account Settings',
     props: {
-      to: '/',
+      to: '/user/settings/profile',
     },
   },
   {
